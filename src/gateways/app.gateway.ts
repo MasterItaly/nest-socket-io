@@ -21,6 +21,24 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
   handleConnection(client: any, ...args: any[]): void {
     this.logger.log(`Connection - Client: ${client.id}`);
     this.logger.log(`Connection - Args: ${JSON.stringify(args, null, 2)}`);
+
+    client.on('ping', (): void => {
+      console.log('⚪️ Ping from client:', client.id);
+    });
+
+    client.on('pong', (latency: any): void => {
+      console.log(
+        `⚪️ Pong received from client ${client.id} with latency: ${latency} ms`,
+      );
+    });
+
+    client.on('error', (error: any): void => {
+      console.error('🔴 Socket.IO Error:', error);
+    });
+
+    client.on('upgrade', (): void => {
+      console.log('🔵 Connection upgraded to WebSocket for client:', client.id);
+    });
   }
 
   handleDisconnect(client: any): void {
